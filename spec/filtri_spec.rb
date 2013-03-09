@@ -70,4 +70,38 @@ describe Filtri do
 
   end
 
+  it "should handle regexp as well as plain strings when applying meta-rules" do
+
+    in_str = "foobarfoobar"
+    expected = "bazbagbazbag"
+
+
+    f = filtri do
+      meta "FB" => "foobar"
+      rule /FB/ => "bazbag"
+    end
+
+    result = f.apply(in_str)
+    expect(result).to eq(expected)
+
+
+  end
+
+  it "should handle apply meta rules to the 'from' and 'to' part of the rule hash" do
+
+    in_str = "foobarfoobar"
+    expected = "bazbagbazbag"
+
+
+    f = filtri do
+      meta "FB" => "bazbag"
+      rule /foobar/ => "FB"
+    end
+
+    result = f.apply(in_str)
+    expect(result).to eq(expected)
+
+  end
+
+
 end
