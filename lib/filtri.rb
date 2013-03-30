@@ -2,6 +2,8 @@ require 'docile'
 require 'pp'
 require 'to_regexp'
 
+# Filtri DSL
+# @author karl l <karl@ninjacontrol.com>
 class Filtri
 
   def initialize
@@ -10,14 +12,22 @@ class Filtri
     @passes = 1
   end
 
+  # Add a filtering rule
+  # @param [Hash{Regexp=>String}] rule_hash
   def rule(rule_hash)
     add_rule(@rules, rule_hash)
   end
 
+  # Add a meta rule
+  # @param [Hash{Regexp=>String}] rule_hash
   def meta(rule_hash)
     add_rule(@meta_rules, rule_hash)
   end
 
+  # Add a rule to the current rule set
+  # @param [Array<Hash{Regexp=>String}>] rule_set
+  # @param [Hash{Regexp=>String}] rule_hash
+  # @private
   def add_rule(rule_set, rule_hash)
 
     rule_hash.each_key do |k|
@@ -26,7 +36,9 @@ class Filtri
 
   end
 
-
+  # @param [Regexp, String] val
+  # @param [Hash{Regexp => String}] rule
+  # @private
   def do_rewite(val, rule)
     case val
       when Regexp
@@ -41,6 +53,10 @@ class Filtri
 
   end
 
+  # Rewrite a hash with a set of rules
+  # @param [Hash{Pattern => String}] in_hash
+  # @param [Hash{Pattern => String}] rules
+  # @private
   def rewrite(in_hash, rules)
     out_hash = []
     in_hash.each do |v|
@@ -53,12 +69,13 @@ class Filtri
       end
       out_hash << {from: f, to: t}
     end
-    # pp in_hash
-    # pp out_hash
     out_hash
   end
 
 
+  # Apply filtering rules to the provided string
+  # @param [String] in_str
+  # @return [String] the resulting string
   def apply(in_str)
 
     @passes.times do
@@ -75,7 +92,23 @@ class Filtri
     in_str
   end
 
-
+  # Factory, init with ruleset from strings
+  # @param [Array<String>] strings
+  # @return [Filtri] A new Filtri object with the rules parsed from the provided string(s).
+  def self.from_str(strings)
+     strings.strip.lines do |l|
+        op_str = l.strip.partition " "
+        if op_str.length == 3
+          op = op_str[0]
+          op_arg = op_str[2]
+          puts "Got op = #{op}, arg = #{op_arg}"
+        else
+          unless l.strip[0] == "#" # Comment line, ignore
+            puts "Unrecognized rule format : #{l}"
+          end
+        end
+    end
+  end
 end
 
 def filtri(&block)

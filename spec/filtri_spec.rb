@@ -104,4 +104,49 @@ describe Filtri do
   end
 
 
+  it "should parse rules from strings" do
+
+    pending("parsing rules from string is not implemented")
+
+    in_str = "foobarfoobar"
+    expected = "bazbagbazbag"
+
+    strings = <<EOF
+
+  # this is a comment
+  rule /fo+bar/ => "bazbag"
+
+EOF
+
+
+    result = Filtri.from_str(strings).apply(in_str)
+
+    expect(result).to eq(expected)
+
+  end
+
+  it "should load rules from external files" do
+
+    pending("loading rules from files is not implemented")
+    in_str = "foobarfoobar"
+    expected = "bazbagbazbag"
+
+
+    f = <<EOF
+
+  # this is a comment
+  rule /fo+bar/ => "bazbag"
+
+EOF
+
+    filename = "test.filtri"
+
+    result = Filtri.load(filename).apply(in_str)
+
+    expect(result).to eq(expected)
+
+
+  end
+
+
 end
