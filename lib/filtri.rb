@@ -7,9 +7,9 @@ require 'to_regexp'
 class Filtri
 
   def initialize
-    @rules = []
+    @rules      = []
     @meta_rules = []
-    @passes = 1
+    @passes     = 1
   end
 
   # Add a filtering rule
@@ -31,7 +31,7 @@ class Filtri
   def add_rule(rule_set, rule_hash)
 
     rule_hash.each_key do |k|
-      rule_set << {from: k, to: rule_hash[k]}
+      rule_set << { from: k, to: rule_hash[k] }
     end
 
   end
@@ -39,7 +39,7 @@ class Filtri
   # @param [Regexp, String] val
   # @param [Hash{Regexp => String}] rule
   # @private
-  def do_rewite(val, rule)
+  def do_rewrite(val, rule)
     case val
       when Regexp
         val_str = PP.singleline_pp(val, "")
@@ -64,10 +64,10 @@ class Filtri
       t = v[:to]
 
       rules.each do |r|
-        f = do_rewite(f, r)
-        t = do_rewite(t, r)
+        f = do_rewrite(f, r)
+        t = do_rewrite(t, r)
       end
-      out_hash << {from: f, to: t}
+      out_hash << { from: f, to: t }
     end
     out_hash
   end
@@ -96,17 +96,17 @@ class Filtri
   # @param [Array<String>] strings
   # @return [Filtri] A new Filtri object with the rules parsed from the provided string(s).
   def self.from_str(strings)
-     strings.strip.lines do |l|
-        op_str = l.strip.partition " "
-        if op_str.length == 3
-          op = op_str[0]
-          op_arg = op_str[2]
-          puts "Got op = #{op}, arg = #{op_arg}"
-        else
-          unless l.strip[0] == "#" # Comment line, ignore
-            puts "Unrecognized rule format : #{l}"
-          end
+    strings.strip.lines do |l|
+      op_str = l.strip.partition " "
+      if op_str.length == 3
+        op     = op_str[0]
+        op_arg = op_str[2]
+        puts "Got op = #{op}, arg = #{op_arg}"
+      else
+        unless l.strip[0] == "#" # Comment line, ignore
+          puts "Unrecognized rule format : #{l}"
         end
+      end
     end
   end
 end
