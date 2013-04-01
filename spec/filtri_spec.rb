@@ -3,7 +3,7 @@ require "filtri"
 
 describe Filtri do
 
-  it "should apply a rule to translate a string" do
+  it "applies a rule to translate a string" do
 
     in_str = "foo\nbaz\nbar\nfoo"
     expected = "bar\nbug\nbar\nbar"
@@ -19,7 +19,7 @@ describe Filtri do
 
   end
 
-  it "should apply a simple regexp rule to translate a string" do
+  it "applies a simple regexp rule to translate a string" do
 
     in_str = "foo\nbaz\nbar\nfoo"
     expected = "bar\nbug\nbar\nbar"
@@ -35,7 +35,7 @@ describe Filtri do
 
   end
 
-  it "should apply a regexp and include matches in the result" do
+  it "applies a regexp and include matches in the result" do
 
     in_str = "This is a test XXXXX"
     expected = "This is a passing test ! (XXXXX)"
@@ -52,7 +52,7 @@ describe Filtri do
   end
 
 
-  it "should re-write rules with meta-rules" do
+  it "re-writes rules with meta-rules" do
 
     in_str = "foo\nbaz\nbar\nfoo"
     expected = "bar\nbug\nbar\nbar"
@@ -70,7 +70,7 @@ describe Filtri do
 
   end
 
-  it "should handle regexp as well as plain strings when applying meta-rules" do
+  it "re-writes regexps and plain strings with meta-rules" do
 
     in_str = "foobarfoobar"
     expected = "bazbagbazbag"
@@ -87,7 +87,7 @@ describe Filtri do
 
   end
 
-  it "should handle apply meta rules to the 'from' and 'to' part of the rule hash" do
+  it "applies meta-rules on both parts of the rule" do
 
     in_str = "foobarfoobar"
     expected = "bazbagbazbag"
@@ -104,17 +104,16 @@ describe Filtri do
   end
 
 
-  it "should parse rules from strings" do
+  it "parses rules from strings" do
 
-    pending("parsing rules from string is not implemented")
+
 
     in_str = "foobarfoobar"
     expected = "bazbagbazbag"
 
     strings = <<EOF
 
-  # this is a comment
-  rule /fo+bar/ => "bazbag"
+    rule /fo+bar/ => "bazbag"
 
 EOF
 
@@ -125,7 +124,71 @@ EOF
 
   end
 
-  it "should load rules from external files" do
+  it "parses rules with comments and empty lines" do
+
+    in_str = "foobarfoobar"
+    expected = "**b**!!a!!z**b**!!a!!g**b**!!a!!z**b**!!a!!g"
+
+    strings = %q(
+
+    # this is a comment
+    rule /fo+bar/ => "bazbag"
+    rule /(a)+/ => '!!\1!!'
+    rule /(b)+/ => '**\1**'
+
+    # empty line above
+    rule "text" => "some other text"
+
+
+
+)
+
+
+    f = Filtri.from_str(strings)
+    result = f.apply(in_str)
+
+    expect(result).to eq(expected)
+
+  end
+
+  it "raises an exception when parsing an unknown rule" do
+
+
+    strings = %q(
+
+    # Below are valid rules
+
+    meta /XXX/ => "YYYYY"
+    rule /FOO/ => "BAR"
+
+    # Below is an unknown rule name
+    stupid_rule /BAG/ => "BAR"
+
+)
+    expect { Filtri.from_str(strings) }.to raise_error(FiltriInitError)
+
+  end
+
+  it "raises an exception when parsing an invalid rule format" do
+
+
+    strings = %q(
+
+    # Below are valid rules
+
+    meta /XXX/ => "YYYYY"
+    rule /FOO/ => "BAR"
+
+    # Below is an a rule w. invalid format
+    rule NOT_VALID
+
+)
+    expect { Filtri.from_str(strings) }.to raise_error(FiltriInitError)
+
+  end
+
+
+  it "load rules from external files" do
 
     pending("loading rules from files is not implemented")
     in_str = "foobarfoobar"

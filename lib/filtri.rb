@@ -1,10 +1,21 @@
 require 'docile'
 require 'pp'
 require 'to_regexp'
+require 'str2hash'
 
 # Filtri DSL
 # @author karl l <karl@ninjacontrol.com>
 class Filtri
+
+  # The rules
+  attr_reader :rules
+  # The meta rules
+  attr_reader :meta_rules
+
+  # @private
+  RULES = [:rule, :meta]
+
+
 
   def initialize
     @rules      = []
@@ -13,7 +24,7 @@ class Filtri
   end
 
   # Add a filtering rule
-  # @param [Hash{Regexp=>String}] rule_hash
+  # @param [Hash{Regexp => String},Hash{String => String}] rule_hash
   def rule(rule_hash)
     add_rule(@rules, rule_hash)
   end
@@ -24,9 +35,9 @@ class Filtri
     add_rule(@meta_rules, rule_hash)
   end
 
-  # Add a rule to the current rule set
-  # @param [Array<Hash{Regexp=>String}>] rule_set
-  # @param [Hash{Regexp=>String}] rule_hash
+  # Add a rule to the current rule-set
+  # @param [Array<Hash{Regexp => String},Hash{String => String}>] rule_set
+  # @param [Hash{Regexp => String},Hash{String => String}] rule_hash
   # @private
   def add_rule(rule_set, rule_hash)
 
@@ -37,7 +48,7 @@ class Filtri
   end
 
   # @param [Regexp, String] val
-  # @param [Hash{Regexp => String}] rule
+  # @param [Hash{Regexp => String},Hash{String => String}] rule
   # @private
   def do_rewrite(val, rule)
     case val
@@ -54,8 +65,8 @@ class Filtri
   end
 
   # Rewrite a hash with a set of rules
-  # @param [Hash{Pattern => String}] in_hash
-  # @param [Hash{Pattern => String}] rules
+  # @param [Hash{Regexp => String},Hash{String => String}] in_hash
+  # @param [Hash{Regexp => String},Hash{String => String}] rules
   # @private
   def rewrite(in_hash, rules)
     out_hash = []
@@ -92,25 +103,82 @@ class Filtri
     in_str
   end
 
-  # Factory, init with ruleset from strings
-  # @param [Array<String>] strings
+  # Factory, init with rule-set from a string
+  #
+  # The input string is expected to contain rules and comments, one per line,
+  # separated by a line break.
+  # The expected format of a line is "{operation} <space> {argument} <eol>".
+  # Empty lines and lines starting with a '#' are ignored. Whitespace at the beginning of a line
+  # is trimmed.
+  #
+  # @param [String] rule_str
   # @return [Filtri] A new Filtri object with the rules parsed from the provided string(s).
-  def self.from_str(strings)
-    strings.strip.lines do |l|
+  # @raise [FiltriInitError] if an error occurs when initialising the rules from the provided strings
+  def self.from_str(rule_str)
+
+    inst = Filtri.new
+
+    rule_str.strip.lines do |l|
+
       op_str = l.strip.partition " "
-      if op_str.length == 3
+      if op_str[0].length > 0
         op     = op_str[0]
         op_arg = op_str[2]
-        puts "Got op = #{op}, arg = #{op_arg}"
-      else
-        unless l.strip[0] == "#" # Comment line, ignore
-          puts "Unrecognized rule format : #{l}"
+
+        if Filtri::RULES.include? op.to_sym
+          # parse arg string
+          begin
+            arg_hash = op_arg.to_h
+          rescue Parslet::ParseFailed => err
+            raise FiltriInitError, "Invalid rule format: '#{op_arg}' (#{err.message})"
+          end
+          # add rule
+          inst.send(op.to_sym,arg_hash)
+        else
+          raise FiltriInitError, "Unknown rule: #{op}" unless op == "#"
         end
+
       end
     end
+
+    inst
+
+  end
+
+  # Load rules from a file
+  # @param [String] file_name
+  # @return [Filtri] A new Filtri object with the rules contained in the file
+  # @raise [IOError] If an error occurs when opening the file
+  # @raise [FiltriInitError] If an error occurs when parsing the rules in the file
+  def self.load(file_name)
+    File.open(file_name) do |f|
+
+      Filtri.from_str(f.readlines)
+
+      end
+  end
+
+
+end
+
+class FiltriInitError < StandardError
+  def initialize(msg)
+    super(msg)
+    @msg = msg
   end
 end
 
+
+# Create a Filtri object containing a set of rules
+#
+# @example
+#
+#   f = filtri do
+#       rule "foo" => "bar"
+#       rule "baz" => "bug"
+#   end
+#
+# @return [Filtri] A new Filtri object containing the provided rules
 def filtri(&block)
   Docile.dsl_eval(Filtri.new, &block)
 end
