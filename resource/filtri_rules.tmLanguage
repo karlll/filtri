@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>fileTypes</key>
+	<array>
+		<string>rules</string>
+	</array>
+	<key>name</key>
+	<string>Filtri rules</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>comment</key>
+			<string>A comment</string>
+			<key>match</key>
+			<string>^\s*(#.*)$</string>
+			<key>name</key>
+			<string>comment.line.numer-sign.rules</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>A rule</string>
+			<key>match</key>
+			<string>^\s*rule</string>
+			<key>name</key>
+			<string>support.function.rules</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>A meta rule</string>
+			<key>match</key>
+			<string>^\s*meta</string>
+			<key>name</key>
+			<string>support.function.rules</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>A string</string>
+			<key>match</key>
+			<string>"([^"]*)"</string>
+			<key>name</key>
+			<string>string.quoted.double.rules</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>A string</string>
+			<key>match</key>
+			<string>'([^']*)'</string>
+			<key>name</key>
+			<string>string.quoted.single.rules</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>A regular expression</string>
+			<key>match</key>
+			<string>/([^']*)/</string>
+			<key>name</key>
+			<string>string.regexp.rules</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>A mapping</string>
+			<key>match</key>
+			<string>=&gt;</string>
+			<key>name</key>
+			<string>keyword.operator.rules</string>
+		</dict>
+	</array>
+	<key>scopeName</key>
+	<string>text.rules</string>
+	<key>uuid</key>
+	<string>7d1b615b-cfb6-41e1-83e1-6ff8508e0133</string>
+</dict>
+</plist>
