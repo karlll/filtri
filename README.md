@@ -11,8 +11,6 @@ Filtri is a tiny DSL for text substitution.
 
 Define a set of substitution rules using `rule` and apply to an input string:
 
-    in_str = "foobazbarfoo"
-    expected = "barbugbarbar"
 
     f = filtri do
       rule /fo+/ => "bar"
