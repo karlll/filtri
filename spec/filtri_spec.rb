@@ -188,19 +188,20 @@ EOF
   end
 
 
-  it "load rules from external files" do
+  it "loads rules from external files" do
 
-    pending("loading rules from files is not implemented")
     in_str = "foobarfoobar"
     expected = "bazbagbazbag"
 
 
-    f = <<EOF
+    content = %q(
 
   # this is a comment
   rule /fo+bar/ => "bazbag"
 
-EOF
+)
+
+    IO.stub(:read).with("test.filtri").and_return content
 
     filename = "test.filtri"
 
@@ -208,6 +209,13 @@ EOF
 
     expect(result).to eq(expected)
 
+
+  end
+
+  it "raises an exception when file is missing" do
+
+
+    expect { Filtri.load("stupid_invalid_file") }.to raise_error(SystemCallError)
 
   end
 

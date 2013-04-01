@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.version       = Filtri::VERSION
   spec.authors       = ["karl l"]
   spec.email         = ["karl@ninjacontrol.com"]
-  spec.date          = '2013-03-29'
+  spec.date          = '2013-04-01'
   spec.summary       = "A tiny DSL for filtering strings"
   spec.description   = "Filtri is a little DSL that simplifies the work of applying multiple substitution rules to a string."
   spec.homepage      = "https://github.com/karlll/filtri/"

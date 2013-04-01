@@ -148,14 +148,13 @@ class Filtri
   # Load rules from a file
   # @param [String] file_name
   # @return [Filtri] A new Filtri object with the rules contained in the file
-  # @raise [IOError] If an error occurs when opening the file
+  # @raise [IOError,SystemCallError] If an error occurs when opening the file
   # @raise [FiltriInitError] If an error occurs when parsing the rules in the file
   def self.load(file_name)
-    File.open(file_name) do |f|
 
-      Filtri.from_str(f.readlines)
+    data = IO.read(file_name)
+    Filtri.from_str(data)
 
-      end
   end
 
 
