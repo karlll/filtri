@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'pp'
+require_relative '../lib/filtri/command'
+
+begin
+
+  debug = true
+
+  opts = FiltriCmd.parse_opts
+
+  unless FiltriCmd.validate_opts(opts)
+    exit 1
+  end
+  result = FiltriCmd.run(opts, opts[:input])
+  puts result
+rescue SystemExit => sys_exit
+  exit sys_exit.status
+rescue Exception => ex
+
+  puts "[Error] #{ex.message}"
+  puts " -----> #{ex.backtrace.join("\n        ")}" if debug
+
+end

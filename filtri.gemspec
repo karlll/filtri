@@ -9,12 +9,14 @@ Gem::Specification.new do |spec|
   spec.version       = Filtri::VERSION
   spec.authors       = ["karl l"]
   spec.email         = ["karl@ninjacontrol.com"]
-  spec.date          = '2013-04-01'
-  spec.summary       = "A tiny DSL for filtering strings"
-  spec.description   = "Filtri is a little DSL that simplifies the work of applying multiple substitution rules to a string."
+  spec.date          = '2013-04-07'
+  spec.summary       = "A tiny tool for text substitution"
+  spec.description   = "Filtri is a tool that simplifies the work of applying multiple substitution rules to a string."
   spec.homepage      = "https://github.com/karlll/filtri/"
   spec.license       = "MIT"
-  
+
+  spec.required_ruby_version = '>= 1.9.3'
+
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
@@ -22,9 +24,9 @@ Gem::Specification.new do |spec|
   
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "rspec", ">= 2.11"
   spec.add_runtime_dependency "docile"
-  spec.add_runtime_dependency "str2hash"
+  spec.add_runtime_dependency "str2hash", ">= 0.1.0"
   spec.add_runtime_dependency "to_regexp"
  
   end

@@ -21,6 +21,7 @@ class Filtri
     @rules      = []
     @meta_rules = []
     @passes     = 1
+    @meta_applied = false
   end
 
   # Add a filtering rule
@@ -92,7 +93,10 @@ class Filtri
     @passes.times do
 
       unless @meta_rules.empty?
-        @rules = rewrite(@rules, @meta_rules)
+        unless @meta_applied
+          @rules = rewrite(@rules, @meta_rules)
+          @meta_applied = true
+        end
       end
 
       @rules.each do |rule|
@@ -103,8 +107,6 @@ class Filtri
     in_str
   end
 
-  # Factory, init with rule-set from a string
-  #
   # The input string is expected to contain rules and comments, one per line,
   # separated by a line break.
   # The expected format of a line is "{operation} <space> {argument} <eol>".
@@ -112,11 +114,8 @@ class Filtri
   # is trimmed.
   #
   # @param [String] rule_str
-  # @return [Filtri] A new Filtri object with the rules parsed from the provided string(s).
   # @raise [FiltriInitError] if an error occurs when initialising the rules from the provided strings
-  def self.from_str(rule_str)
-
-    inst = Filtri.new
+  def add_rule_str(rule_str)
 
     rule_str.strip.lines do |l|
 
@@ -133,7 +132,7 @@ class Filtri
             raise FiltriInitError, "Invalid rule format: '#{op_arg}' (#{err.message})"
           end
           # add rule
-          inst.send(op.to_sym,arg_hash)
+          self.send(op.to_sym,arg_hash)
         else
           raise FiltriInitError, "Unknown rule: #{op}" unless op == "#"
         end
@@ -141,11 +140,41 @@ class Filtri
       end
     end
 
+
+  end
+
+
+  # Factory, init with rule-set from a string
+  #
+  # The input string is expected to contain rules and comments, one per line,
+  # separated by a line break.
+  # The expected format of a line is '{operation} <space> {argument} <eol>'.
+  # Empty lines and lines starting with a '#' are ignored. Whitespace at the beginning of a line
+  # is trimmed.
+  #
+  # @param [String] rule_str
+  # @return [Filtri] A new Filtri object with the rules parsed from the provided string(s).
+  # @raise [FiltriInitError] if an error occurs when initialising the rules from the provided strings
+  def self.from_str(rule_str)
+
+    inst = Filtri.new
+    inst.add_rule_str rule_str
     inst
 
   end
 
   # Load rules from a file
+  # @param [String] file_name
+  # @raise [IOError,SystemCallError] If an error occurs when opening the file
+  # @raise [FiltriInitError] If an error occurs when parsing the rules in the file
+  def load(file_name)
+
+    data = IO.read(file_name)
+    add_rule_str(data)
+
+  end
+
+  # Factory, Init by loading rules from a file
   # @param [String] file_name
   # @return [Filtri] A new Filtri object with the rules contained in the file
   # @raise [IOError,SystemCallError] If an error occurs when opening the file
@@ -157,6 +186,10 @@ class Filtri
 
   end
 
+
+  def self.valid_rules
+    Filtri::RULES
+  end
 
 end
 
@@ -181,3 +214,4 @@ end
 def filtri(&block)
   Docile.dsl_eval(Filtri.new, &block)
 end
+
