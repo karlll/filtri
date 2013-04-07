@@ -11,6 +11,7 @@ describe Filtri do
     f = filtri do
       rule "foo" => "bar"
       rule "baz" => "bug"
+      rule ';' => ''
     end
 
     result = f.apply(in_str)
@@ -135,6 +136,7 @@ EOF
     rule /fo+bar/ => "bazbag"
     rule /(a)+/ => '!!\1!!'
     rule /(b)+/ => '**\1**'
+    rule 'nop' => ''
 
     # empty line above
     rule "text" => "some other text"

@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec", ">= 2.11"
   spec.add_runtime_dependency "docile"
-  spec.add_runtime_dependency "str2hash", ">= 0.1.0"
+  spec.add_runtime_dependency "str2hash", ">= 0.1.1"
   spec.add_runtime_dependency "to_regexp"
  
   end

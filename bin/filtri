@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'pp'
 require_relative '../lib/filtri/command'
 
 begin
 
-  debug = true
+  debug = false
 
   opts = FiltriCmd.parse_opts
 
