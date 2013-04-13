@@ -47,7 +47,7 @@ describe FiltriCmd do
 
       stub_const("ARGV",["input1", "input2"])
       out_opts = FiltriCmd.parse_opts
-      $stdout.should_receive(:puts).with(/Error/i)
+      $stderr.should_receive(:puts).with(/Error/i)
       FiltriCmd.validate_opts(out_opts).should be_false
 
     end
@@ -66,7 +66,7 @@ describe FiltriCmd do
       File.stub!(:exist?).with("existing_file").and_return true
       File.stub!(:exist?).with("input_file1").and_return true
       File.stub!(:exist?).with("bad_input_file2").and_return false
-      $stdout.should_receive(:puts).with(/Error/i)
+      $stderr.should_receive(:puts).with(/Error/i)
       FiltriCmd.validate_opts(out_opts).should be_false
 
     end

@@ -50,7 +50,7 @@ class FiltriCmd
 
 
     unless opts.include?(:rules) || opts.include?(:rule_files)
-      puts "Error: provide a rule or a rule file."
+      $stderr.puts "Error: provide a rule or a rule file."
       return false
     end
 
@@ -58,7 +58,7 @@ class FiltriCmd
       if opts.include?(f)
         opts[f].each do |i|
           unless File.exist?(i)
-            puts "Error: file #{i} does not exist."
+            $stderr.puts "Error: file #{i} does not exist."
             return false
           end
         end
