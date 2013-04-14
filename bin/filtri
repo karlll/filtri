@@ -17,7 +17,7 @@ rescue SystemExit => sys_exit
   exit sys_exit.status
 rescue Exception => ex
 
-  $sterr.puts "[Error] #{ex.message}"
-  $sterr.puts " -----> #{ex.backtrace.join("\n        ")}" if debug
+  $stderr.puts "[Error] #{ex.message}"
+  $stderr.puts " -----> #{ex.backtrace.join("\n        ")}" if debug
 
 end

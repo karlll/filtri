@@ -134,7 +134,7 @@ class Filtri
           # add rule
           self.send(op.to_sym,arg_hash)
         else
-          raise FiltriInitError, "Unknown rule: #{op}" unless op == "#"
+          raise FiltriInitError, "Unknown rule: #{op}" unless ( op == "#" || l[0] == "#" )
         end
 
       end
