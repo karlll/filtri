@@ -96,6 +96,7 @@ Definitions for syntax highlighting of `.rule` files in Sublime Text 2 and TextM
 
 ## Version information
 
+* 0.1.2 - Bugfixes
 * 0.1.0 - Added filtri tool and syntax highlighting
 * 0.0.1 - Initial version
 
